@@ -1,0 +1,37 @@
+# main paths
+data_path: "/content/data"
+annotation_path: "./data/regression/cylinder"
+
+# annotation paths
+annotations: "test.csv"
+images: "interferograms"
+
+# exp params
+save_path: "./experiments/results/efficientnet_b0/finetunning"
+test_name: "predict_test.csv"
+
+trainer:
+  precision: 32
+  accelerator: auto
+  #  accelerator: gpu
+  devices: auto
+  #  devices: [0]
+
+weights: "./experiments/results/efficientnet_b0/finetunning/model.ckpt"
+model:
+  encoder: efficientnet_b0
+  pretrained: False
+  output: 2
+
+target_cols: ['A', 'R']
+target_cols_means: [4.359993, 2.192105]
+target_cols_stds: [2.192105, 2.914274] 
+
+dataloader:
+  batch_size: 128
+  num_workers: 2
+
+preprocess:
+  side_size: 224
+  mean: [0.485, 0.456, 0.406]
+  std: [0.229, 0.224, 0.225]

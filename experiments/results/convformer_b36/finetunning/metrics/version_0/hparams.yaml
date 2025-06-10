@@ -1,0 +1,57 @@
+data_path: /content/data
+annotation_path: ./data/regression/cylinder
+exp_path: ./experiments/regression/cylinder/AR
+annotations: train.csv
+images: interferograms
+val_annotations: val.csv
+val_images: interferograms
+project: convformer_b36
+exp_name: stage(-1)_block(-1)_04jun_n2
+trainer:
+  precision: 32
+  sync_batchnorm: true
+  gradient_clip_val: 1.0
+  max_epochs: 15
+  limit_train_batches: 1.0
+  accelerator: auto
+  devices: auto
+weights: ./experiments/regression/cylinder/AR/convformer_b36/head_03jun_n0/model.ckpt
+trainable_blocks: 1
+model:
+  encoder: convformer_b36
+  pretrained: true
+  output: 2
+target_cols:
+- A
+- R
+target_cols_means:
+- 4.359993
+- 2.192105
+target_cols_stds:
+- 2.192105
+- 2.914274
+dataloader:
+  batch_size: 64
+  num_workers: 2
+preprocess:
+  side_size: 224
+  mean:
+  - 0.485
+  - 0.456
+  - 0.406
+  std:
+  - 0.229
+  - 0.224
+  - 0.225
+optimizer: adam
+optimizer_params:
+  lr: 0.0001
+  weight_decay: 0.0001
+scheduler: cosine
+scheduler_params:
+  warmup_epochs: 5
+checkpoint:
+  monitor: MeanSquaredError/val
+  filename: model
+  mode: min
+save_path: ./experiments/regression/cylinder/AR/convformer_b36/stage(-1)_block(-1)_04jun_n2

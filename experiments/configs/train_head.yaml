@@ -1,0 +1,64 @@
+# main paths
+data_path: "/content/data"
+annotation_path: "./data"
+exp_path: "./experiments/results"
+
+# train
+annotations: "train.csv"
+images: "interferograms"
+
+# validation
+val_annotations: "val.csv"
+val_images: "interferograms"
+
+# exp params
+project: efficientnet_b0
+exp_name: head
+
+
+trainer:
+  precision: 32
+  sync_batchnorm: True
+  gradient_clip_val: 1.0
+  max_epochs: 10
+  limit_train_batches: 0.5
+  accelerator: auto
+  #  accelerator: gpu
+  devices: auto
+  #  devices: [0]
+
+weights:
+
+trainable_blocks: head
+
+model:
+  encoder: efficientnet_b0
+  pretrained: True
+  output: 2
+
+target_cols: ['A', 'R']
+target_cols_means: [4.359993, 2.192105]
+target_cols_stds: [2.192105, 2.914274] 
+
+dataloader:
+  batch_size: 64
+  num_workers: 2
+
+preprocess:
+  side_size: 224
+  mean: [0.485, 0.456, 0.406]
+  std: [0.229, 0.224, 0.225]
+
+optimizer: adam
+optimizer_params:
+  lr: 0.001
+  weight_decay: 0.0001
+
+scheduler: cosine
+scheduler_params:
+  warmup_epochs: 0
+
+checkpoint:
+  monitor: MeanSquaredError/val
+  filename: model
+  mode: min
